@@ -38,10 +38,17 @@ pkgs.writeShellApplication {
           | jq -r .sha256
       )"
 
+      version="$(
+        curl -fsSL \
+          "https://raw.githubusercontent.com/$repo/$rev/apps/cli/package.json" \
+          | jq -r .version
+      )"
+
       jq \
         --arg rev "$rev" \
         --arg hash "$hash" \
-        '.rev = $rev | .hash = $hash | .pnpmDepsHash = ""' \
+        --arg version "$version" \
+        '.rev = $rev | .hash = $hash | .version = $version | .pnpmDepsHash = ""' \
         VERSION.json > VERSION.json.tmp
       mv VERSION.json.tmp VERSION.json
 

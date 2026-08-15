@@ -30,9 +30,9 @@
             inherit rev hash;
           };
 
-          version = (builtins.fromJSON (
-            builtins.readFile "${src}/apps/cli/package.json"
-          )).version;
+  # The version is read from the upstream package.json by the update app and
+  # recorded here, so flake evaluation does not require fetching the source.
+  version = current.version;
         in
         rec {
           default = dsh;

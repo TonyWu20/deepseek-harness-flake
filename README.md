@@ -89,8 +89,8 @@ nix run .#update
 ```
 
 The script pins the latest `master` commit and clears the dependency hash.
-Build the package to learn the new hash, then set `pnpmDepsHash` in
-`VERSION.json`:
+It also records the upstream version in `VERSION.json`.  Build the package to
+learn the new hash, then set `pnpmDepsHash` in `VERSION.json`:
 
 ```bash
 nix build .#dsh 2>&1 | rg 'got: sha256-'
