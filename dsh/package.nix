@@ -35,7 +35,7 @@ buildNpmPackage (finalAttrs: {
     bash ${./patch-workspace.sh} lifecycle
   '';
 
-  pnpmDeps = (fetchPnpmDeps.override { inherit yq-go; }) {
+  pnpmDeps = (fetchPnpmDeps.override { yq = yq-go; }) {
     inherit (finalAttrs)
       pname
       version
