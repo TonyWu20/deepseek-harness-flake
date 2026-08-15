@@ -15,8 +15,11 @@ set -euo pipefail
 
 # Every publishable workspace package, as shell glob patterns.  The depth
 # keeps test fixtures (which live deeper in the tree) out of the closure.
+# `vendor/group` only: the other vendored packages are already direct
+# dependencies of the CLI, and `cosmokit`/`schemastery` carry `link:`
+# overrides that reject a `workspace:^` manifest specifier.
 WORKSPACE_PACKAGE_GLOBS=(
-  vendor/*/package.json
+  vendor/group/package.json
   packages/*/*/package.json
 )
 
