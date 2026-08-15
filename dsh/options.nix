@@ -34,7 +34,8 @@ in
         Profile name passed to `dsh --profile <name>` when the command line
         does not contain an explicit `--profile`.  dsh requires a profile, so
         this option makes a plain `dsh` invocation boot a fixed profile, for
-        example `web` or `headless`.
+        example `web` or `headless`.  The `dsh web` and `dsh plugin`
+        subcommands are exempt: they reject a parent `--profile`.
       '';
       example = "headless";
     };
@@ -123,7 +124,7 @@ in
           tmp="$(mktemp "$dsh_home/settings.yaml.XXXXXX")"
 
           if [ -f "$dsh_home/settings.yaml" ]; then
-            ${lib.getExe pkgs.yq-go} '. * load('"${lib.escapeShellArg settingsPath}"')' \
+            ${lib.getExe pkgs.yq-go} '. * load("${settingsPath}")' \
               "$dsh_home/settings.yaml" > "$tmp"
           else
             cp ${lib.escapeShellArg settingsPath} "$tmp"
@@ -147,19 +148,22 @@ in
       );
 
       # Prepend `--profile <name>` when the invocation has no explicit
-      # `--profile` flag of its own.
+      # `--profile` flag and is not a dsh subcommand (`web`, `plugin`) that
+      # rejects parent `--profile`.
       profileArgs = lib.optionalString (profile != null) # bash
         ''
           wants_profile=0
+          is_subcommand=0
           for arg in "$@"; do
             case "$arg" in
               --) break ;;
               --profile) wants_profile=1 ;;
               --profile=*) wants_profile=1 ;;
+              web|plugin) is_subcommand=1 ;;
             esac
           done
 
-          if [ "$wants_profile" -eq 0 ]; then
+          if [ "$wants_profile" -eq 0 ] && [ "$is_subcommand" -eq 0 ]; then
             set -- --profile ${lib.escapeShellArg profile} "$@"
           fi
         '';
@@ -177,6 +181,7 @@ in
         else
           pkgs.writeShellScriptBin "dsh" # bash
             ''
+              set -euo pipefail
               ${envPrelude}
               ${settingsPrelude}
               ${profileArgs}
