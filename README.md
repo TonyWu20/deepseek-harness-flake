@@ -34,7 +34,7 @@ nix run .#dsh -- web
 
 ```nix
 {
-  inputs.deepseek-harness.url = "github:<you>/deepseek-harness-flake";
+  inputs.deepseek-harness.url = "github:TonyWu20/deepseek-harness-flake";
 
   outputs = { self, nixpkgs, deepseek-harness, ... }: {
     nixosConfigurations.host = nixpkgs.lib.nixosSystem {
