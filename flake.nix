@@ -30,9 +30,9 @@
             inherit rev hash;
           };
 
-          version = builtins.fromJSON (
+          version = (builtins.fromJSON (
             builtins.readFile "${src}/apps/cli/package.json"
-          ).version;
+          )).version;
         in
         rec {
           default = dsh;
