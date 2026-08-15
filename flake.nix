@@ -97,6 +97,9 @@
           update = {
             type = "app";
             program = "${update}/bin/dsh-update";
+            meta = {
+              description = "Update VERSION.json to the latest upstream master";
+            };
           };
         }
       );
