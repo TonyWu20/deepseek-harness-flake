@@ -83,6 +83,11 @@ buildNpmPackage (finalAttrs: {
     ${lib.getExe nodejs-slim} \
       "$appDir/node_modules/@deepseek-ai/dsh-subprocess-local/scripts/ensure-spawn-helper.mjs"
 
+    # node-gyp's generated build files record absolute build-environment
+    # paths (including the pnpm installation).  Remove them; the compiled
+    # binary in build/Release stays.
+    rm -f "$appDir/node_modules/node-pty/build/"{{binding.,}Makefile,config.gypi,pty.target.mk}
+
     mkdir -p "$out/bin"
     makeWrapper ${lib.getExe nodejs-slim} "$out/bin/dsh" \
       --add-flags "--expose-internals" \
