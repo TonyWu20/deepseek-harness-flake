@@ -21,8 +21,9 @@ buildNpmPackage (finalAttrs: {
   inherit src version;
 
   nodejs = nodejs-slim;
+  # nodejs-slim is a runtime dependency (the wrapper executes lib/bin.js with
+  # it, and pnpmConfigHook rewrites node shebangs to its store path).
   disallowedReferences = [
-    nodejs-slim
     pnpm_11
   ];
 
